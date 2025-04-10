@@ -1,9 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>嵌入透明圖片</title>
-  </head>
-  <body>
-    <img src="images/3.png" alt="2" style="opacity: 0.5;">
-  </body>
+<head>
+  <title>嵌入透明 SVG</title>
+  <style>
+    .transparent-svg {
+      opacity: 0.5;
+    }
+  </style>
+</head>
+<body>
+  <object data="images/1.svg" type="image/svg+xml" class="transparent-svg">
+  </object>
+</body>
 </html>
