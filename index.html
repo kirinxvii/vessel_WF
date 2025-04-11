@@ -29,6 +29,7 @@ function create_map() {
     let maptemp = L.map('map',{renderer: L.canvas()}).setView(taichung_cityhall, zoom);
     map = maptemp;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        opacity: 0.5, // 設定透明度為 50%
         attribution: '© OpenStreetMap', // 商用時必須要有版權出處
         zoomControl: true, // 是否顯示 - + 按鈕
         zoomAnimation:false,
