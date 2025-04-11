@@ -21,13 +21,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1; /* 確保 Leaflet 在 VesselFinder 之上 (可以調整) */
-            opacity: 0.3, // 將透明度設定為 30% (你可以調整這個值)
+            z-index: 0; /* 確保 Leaflet 在 VesselFinder 之上 (可以調整) */
+            opacity: 0.99, // 將透明度設定為 30% (你可以調整這個值)
         }
 
         #vessel-finder-container {
-            opacity: 0.99; /* 稍微降低透明度，以便在載入失敗時看到 Leaflet (可選) */
-            z-index: 0;
+            opacity: 0.3; /* 稍微降低透明度，以便在載入失敗時看到 Leaflet (可選) */
+            z-index: 1;
         }
     </style>
 
