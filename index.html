@@ -21,13 +21,16 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 0; /* 確保 Leaflet 在 VesselFinder 之上 (可以調整) */
-            opacity: 0.99, // 將透明度設定為 30% (你可以調整這個值)
+        }
+
+        #leaflet-map {
+            opacity: 0.3; /* 設定 Leaflet 為半透明 */
+            z-index: 0;   /* Leaflet 在下層 */
         }
 
         #vessel-finder-container {
-            opacity: 0.3; /* 稍微降低透明度，以便在載入失敗時看到 Leaflet (可選) */
-            z-index: 1;
+            opacity: 0.5; /* 設定 VesselFinder 為半透明 */
+            z-index: 1;   /* VesselFinder 在上層 */
         }
     </style>
 
@@ -47,29 +50,29 @@
             let mapTemp = L.map('leaflet-map', { renderer: L.canvas() }).setView(taichung_cityhall, zoom);
             leafletMap = mapTemp;
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                
                 attribution: '© OpenStreetMap',
                 zoomControl: true,
                 zoomAnimation: false,
                 markerZoomAnimation: false,
                 fadeAnimation: false,
             }).addTo(leafletMap);
-            
+
             leafletMap.on('moveend', function() {
                 syncVesselFinderView(leafletMap.getCenter(), leafletMap.getZoom());
             });
+
             setTimeout(function () {
                 window.dispatchEvent(new Event('resize'));
             }, 1000);
         };
-        
+
         create_leaflet_map();
     </script>
 
     <script type="text/javascript">
         // Map appearance for VesselFinder
         var vWidth = "100%";          // width in pixels or percentage
-        var vHeight = "450px";         // height in pixels
+        var vHeight = "300px";         // height in pixels (與 map-container 相同)
         var vLatitude = "24.15";       // initial center latitude
         var vLongitude = "120.2";      // initial center longitude
         var vZoom = "12";              // initial zoom
@@ -81,18 +84,10 @@
 
         // Function to update VesselFinder map view (if possible)
         function syncVesselFinderView(center, zoom) {
-            // 需要檢查 VesselFinder 的 API 是否提供方法來動態設定中心點和縮放層級
-            // 這可能需要直接操作 VesselFinder 地圖物件 (如果可以存取的話)
-            // 或者 VesselFinder 腳本可能在載入時就固定了視圖
-
-            // 以下是假設 VesselFinder 有相關的全局變數可以修改 (這不一定正確)
             window.vLatitude = center.lat;
             window.vLongitude = center.lng;
             window.vZoom = zoom;
 
-            // 可能需要重新載入或觸發 VesselFinder 地圖的更新 (取決於其 API)
-            // 這是一個非常簡化的假設，實際情況可能更複雜
-            // 例如，可能需要移除舊的地圖並重新載入腳本
             var vfContainer = document.getElementById('vessel-finder-container');
             vfContainer.innerHTML = ''; // 清空容器
             var script = document.createElement('script');
