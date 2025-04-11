@@ -1,67 +1,116 @@
+<!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""/>
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
 
-<style>
-    #map{
-        height: 450px;
-        width: 100%;
-        height: 450px;
-    };
-</style>
+    <style>
+        #map-container {
+            position: relative; /* 允許子元素絕對定位 */
+            width: 100%;
+            height: 450px;
+        }
+
+        #leaflet-map, #vessel-finder-container {
+            position: absolute; /* 將兩個地圖容器疊放在一起 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* 確保 Leaflet 在 VesselFinder 之上 (可以調整) */
+        }
+
+        #vessel-finder-container {
+            opacity: 0.99; /* 稍微降低透明度，以便在載入失敗時看到 Leaflet (可選) */
+            z-index: 0;
+        }
+    </style>
 
 </head>
 <body>
-<div id="map"></div>
-</body>
+    <div id="map-container">
+        <div id="leaflet-map"></div>
+        <div id="vessel-finder-container">
+            </div>
+    </div>
 
-<script>
-var map = null;
-function create_map() {
+    <script>
+        var leafletMap = null;
+        function create_leaflet_map() {
+            let zoom = 12;
+            let taichung_cityhall = [24.15, 120.2];
+            let mapTemp = L.map('leaflet-map', { renderer: L.canvas() }).setView(taichung_cityhall, zoom);
+            leafletMap = mapTemp;
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                opacity: 0.5,
+                attribution: '© OpenStreetMap',
+                zoomControl: true,
+                zoomAnimation: false,
+                markerZoomAnimation: false,
+                fadeAnimation: false,
+            }).addTo(leafletMap);
 
-    let zoom = 12; // 0 - 18
-    let taichung_cityhall = [24.15,120.2]; // 中心點座標
-    let maptemp = L.map('map',{renderer: L.canvas()}).setView(taichung_cityhall, zoom);
-    map = maptemp;
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        opacity: 0.5, // 設定透明度為 50%
-        attribution: '© OpenStreetMap', // 商用時必須要有版權出處
-        zoomControl: true, // 是否顯示 - + 按鈕
-        zoomAnimation:false,
-        markerZoomAnimation: false,
-        fadeAnimation: false,
-    }).addTo(map);
+            // 同步 Leaflet 地圖的視圖到 VesselFinder (如果 VesselFinder 提供 API)
+            leafletMap.on('moveend', function() {
+                syncVesselFinderView(leafletMap.getCenter(), leafletMap.getZoom());
+            });
 
-    // 強制用 resize window 將所有 tiles 載入
-    setTimeout(function () {
-        window.dispatchEvent(new Event('resize'));
-    }, 1000);
+            setTimeout(function () {
+                window.dispatchEvent(new Event('resize'));
+            }, 1000);
+        };
 
-};
+        create_leaflet_map();
+    </script>
 
-create_map();
+    <script type="text/javascript">
+        // Map appearance for VesselFinder
+        var vWidth = "100%";          // width in pixels or percentage
+        var vHeight = "450px";         // height in pixels
+        var vLatitude = "24.15";       // initial center latitude
+        var vLongitude = "120.2";      // initial center longitude
+        var vZoom = "12";              // initial zoom
+        var vNames = true;             // always show ship names
 
-</script>
+        // Fleet tracking for VesselFinder
+        var vFleet = "bd11a206049a72aa14edad5b5815ee03"; // your personal Fleet key
+        var vFleet_name = "Pin Pile";                     // display particular fleet
 
-<script type="text/javascript">
-    // Map appearance
-    var width="100%";        // width in pixels or percentage
-    var height="450px";       // height in pixels
-    var latitude="24.15";    // center latitude (decimal degrees)
-    var longitude="120.2";   // center longitude (decimal degrees)
-    var zoom="12";           // initial zoom (between 3 and 18)
-    var names=true;          // always show ship names (defaults to false)
+        // Function to update VesselFinder map view (if possible)
+        function syncVesselFinderView(center, zoom) {
+            // 需要檢查 VesselFinder 的 API 是否提供方法來動態設定中心點和縮放層級
+            // 這可能需要直接操作 VesselFinder 地圖物件 (如果可以存取的話)
+            // 或者 VesselFinder 腳本可能在載入時就固定了視圖
 
-    // Fleet tracking
-    var fleet="bd11a206049a72aa14edad5b5815ee03"; // your personal Fleet key (displayed in your User Profile)
-    var fleet_name="Pin Pile";                    // display particular fleet from your fleet list
-</script>
-<script type="text/javascript" src="https://www.vesselfinder.com/aismap.js">
-</script>
-    
+            // 以下是假設 VesselFinder 有相關的全局變數可以修改 (這不一定正確)
+            window.vLatitude = center.lat;
+            window.vLongitude = center.lng;
+            window.vZoom = zoom;
+
+            // 可能需要重新載入或觸發 VesselFinder 地圖的更新 (取決於其 API)
+            // 這是一個非常簡化的假設，實際情況可能更複雜
+            // 例如，可能需要移除舊的地圖並重新載入腳本
+            var vfContainer = document.getElementById('vessel-finder-container');
+            vfContainer.innerHTML = ''; // 清空容器
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://www.vesselfinder.com/aismap.js';
+            document.head.appendChild(script);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            var vfContainer = document.getElementById('vessel-finder-container');
+            if (vfContainer) {
+                var script = document.createElement('script');
+                script.type = 'text/javascript';
+                script.src = 'https://www.vesselfinder.com/aismap.js';
+                document.head.appendChild(script);
+            }
+        });
+    </script>
+
 </html>
