@@ -1,20 +1,46 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.8.0/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"></script>
+<html>
+<head>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
 
+<style>
+    #map { height: 450px; };
+</style>
+
+</head>
+<body>
 <div id="map"></div>
+</body>
 
-#map {
-  height: 180px;
-}
+<script>
+var map = null;
+function create_map() {
 
-// *** 放置地圖
-let zoom = 17; // 0 - 18
-let center = [24.09, 120.19]; // 中心點座標
-let map = L.map('map').setView(center, zoom);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap', // 商用時必須要有版權出處
-  zoomControl: true , // 是否秀出 - + 按鈕
-}).addTo(map);
+    let zoom = 16; // 0 - 18
+    let taichung_cityhall = [24.1635657,120.6486657]; // 中心點座標
+    let maptemp = L.map('map',{renderer: L.canvas()}).setView(taichung_cityhall, zoom);
+    map = maptemp;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap', // 商用時必須要有版權出處
+        zoomControl: true, // 是否顯示 - + 按鈕
+        zoomAnimation:false,
+        markerZoomAnimation: false,
+        fadeAnimation: false,
+    }).addTo(map);
+
+    // 強制用 resize window 將所有 tiles 載入
+    setTimeout(function () {
+        window.dispatchEvent(new Event('resize'));
+    }, 1000);
+
+};
+
+create_map();
+
+</script>
+
 </html>
