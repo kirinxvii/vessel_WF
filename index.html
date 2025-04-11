@@ -25,7 +25,7 @@ var map = null;
 function create_map() {
 
     let zoom = 10; // 0 - 18
-    let taichung_cityhall = [24.09,120.19]; // 中心點座標
+    let taichung_cityhall = [24.15,120.2]; // 中心點座標
     let maptemp = L.map('map',{renderer: L.canvas()}).setView(taichung_cityhall, zoom);
     map = maptemp;
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
