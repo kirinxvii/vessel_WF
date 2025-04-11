@@ -1,35 +1,29 @@
-// 用外層的 div 當 svg 的寬高
-const width = (this.$refs.map.offsetWidth).toFixed(),
-			height = (this.$refs.map.offsetHeight).toFixed();
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaflet Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-eYNu0l5RsGgisCnCvHdhNsPIzGOl6geYT4mR0QqnrJw="
+          crossorigin=""/>
+    <style>
+        #map { height: 300px; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20vVsJGUnmlTdHPFVJPI/ehx3ooLiKibjH0WQnvgzY8="
+            crossorigin=""></script>
+    <script>
+        var map = L.map('map').setView([51.505, -0.09], 13); // 設定中心點和縮放層級
 
-// 讓d3抓svg，並寫入寬高
-var svg = d3.select('#svg')
-            .attr('width', width)
-            .attr('height', height)
-            .attr('viewBox', `0 0 ${width} ${height}`);
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-// 讓d3抓GeoJSON檔，並寫入path的路徑
-var url = 'dist/taiwan.geojson'; // GeoJSON的檔案路徑
-d3.json(url, (error, geometry) => {
-  if (error) throw error;
-
-  svg
-    .selectAll('path')
-    .data(geometry.features)
-    .enter().append('path')
-    .attr('d', path)
-    .attr({
-      // 設定id，為了click時加class用
-      id: (d) => 'city' + d.properties.COUNTYCODE
-    })
-    .on('click', d => {
-      this.h1 = d.properties.COUNTYNAME; // 換中文名
-      this.h2 = d.properties.COUNTYENG; // 換英文名
-      // 有 .active 存在，就移除 .active
-      if(document.querySelector('.active')) {
-        document.querySelector('.active').classList.remove('active');
-      }
-      // 被點擊的縣市加上 .active
-      document.getElementById('city' + d.properties.COUNTYCODE).classList.add('active');
-    });
-});
+        L.marker([51.5, -0.1]).addTo(map)
+            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+            .openPopup();
+    </script>
+</body>
+</html>
