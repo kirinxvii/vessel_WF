@@ -24,7 +24,7 @@
 var map = null;
 function create_map() {
 
-    let zoom = 10; // 0 - 18
+    let zoom = 12; // 0 - 18
     let taichung_cityhall = [24.15,120.2]; // 中心點座標
     let maptemp = L.map('map',{renderer: L.canvas()}).setView(taichung_cityhall, zoom);
     map = maptemp;
@@ -47,4 +47,20 @@ create_map();
 
 </script>
 
+<script type="text/javascript">
+    // Map appearance
+    var width="100%";        // width in pixels or percentage
+    var height="450px";       // height in pixels
+    var latitude="24.15";    // center latitude (decimal degrees)
+    var longitude="120.2";   // center longitude (decimal degrees)
+    var zoom="12";           // initial zoom (between 3 and 18)
+    var names=true;          // always show ship names (defaults to false)
+
+    // Fleet tracking
+    var fleet="bd11a206049a72aa14edad5b5815ee03"; // your personal Fleet key (displayed in your User Profile)
+    var fleet_name="Pin Pile";                    // display particular fleet from your fleet list
+</script>
+<script type="text/javascript" src="https://www.vesselfinder.com/aismap.js">
+</script>
+    
 </html>
