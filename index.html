@@ -10,36 +10,19 @@
 
     <style>
         #map-container {
-            position: relative; /* 允許子元素絕對定位 */
             width: 100%;
             height: 300px;
         }
 
-        #leaflet-map, #vessel-finder-container {
-            position: absolute; /* 將兩個地圖容器疊放在一起 */
-            top: 0;
-            left: 0;
+        #leaflet-map {
             width: 100%;
             height: 100%;
         }
-
-        #leaflet-map {
-            /*opacity: 0.3; /* 設定 Leaflet 為半透明 */
-            z-index: 0;   /* Leaflet 在下層 */
-        }
-
-        #vessel-finder-container {
-            opacity: 0.5; /* 設定 VesselFinder 為半透明 */
-            z-index: 1;   /* VesselFinder 在上層 */
-        }
     </style>
-
 </head>
 <body>
     <div id="map-container">
         <div id="leaflet-map"></div>
-        <div id="vessel-finder-container">
-            </div>
     </div>
 
     <script>
@@ -57,10 +40,6 @@
                 fadeAnimation: false,
             }).addTo(leafletMap);
 
-            leafletMap.on('moveend', function() {
-                syncVesselFinderView(leafletMap.getCenter(), leafletMap.getZoom());
-            });
-
             setTimeout(function () {
                 window.dispatchEvent(new Event('resize'));
             }, 1000);
@@ -68,43 +47,5 @@
 
         create_leaflet_map();
     </script>
-
-    <script type="text/javascript">
-        // Map appearance for VesselFinder
-        var vWidth = "100%";          // width in pixels or percentage
-        var vHeight = "300px";         // height in pixels (與 map-container 相同)
-        var vLatitude = "24.15";       // initial center latitude
-        var vLongitude = "120.2";      // initial center longitude
-        var vZoom = "12";              // initial zoom
-        var vNames = true;             // always show ship names
-
-        // Fleet tracking for VesselFinder
-        var vFleet = "bd11a206049a72aa14edad5b5815ee03"; // your personal Fleet key
-        var vFleet_name = "Pin Pile";                     // display particular fleet
-
-        // Function to update VesselFinder map view (if possible)
-        function syncVesselFinderView(center, zoom) {
-            window.vLatitude = center.lat;
-            window.vLongitude = center.lng;
-            window.vZoom = zoom;
-
-            var vfContainer = document.getElementById('vessel-finder-container');
-            vfContainer.innerHTML = ''; // 清空容器
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = 'https://www.vesselfinder.com/aismap.js';
-            document.head.appendChild(script);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var vfContainer = document.getElementById('vessel-finder-container');
-            if (vfContainer) {
-                var script = document.createElement('script');
-                script.type = 'text/javascript';
-                script.src = 'https://www.vesselfinder.com/aismap.js';
-                document.head.appendChild(script);
-            }
-        });
-    </script>
-
+</body>
 </html>
