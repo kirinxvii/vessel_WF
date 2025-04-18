@@ -27,29 +27,10 @@
 
     <script>
         var leafletMap = null;
-        var coordinateDisplay = null; // 用於顯示座標的 HTML 元素
 
         function create_leaflet_map() {
             let zoom = 10;
             let initial_center = [24.15, 120.2]; // 設定一個大致位於中心點
-
-            // 創建用於顯示座標的 div 元素
-            coordinateDisplay = L.DomUtil.create('div', 'coordinate-display');
-            coordinateDisplay.style.position = 'absolute';
-            coordinateDisplay.style.bottom = '10px';
-            coordinateDisplay.style.left = '10px';
-            coordinateDisplay.style.backgroundColor = 'white';
-            coordinateDisplay.style.padding = '5px';
-            coordinateDisplay.style.zIndex = '1000'; // 確保顯示在其他元素之上
-            document.getElementById('map-container').appendChild(coordinateDisplay);
-
-            // 定義邊界點的經緯度
-            let boundaryA_latlng = [24.120922, 120.188075];
-            let boundaryB_latlng = [24.111212, 120.249094];
-            let boundaryC_latlng = [24.052452, 120.206136];
-            let boundaryD_latlng = [24.052064, 120.134678];
-
-            let lineColor = 'green'; // 設定連線的顏色
 
             leafletMap = L.map('leaflet-map', { renderer: L.canvas() }).setView(initial_center, zoom);
 
@@ -61,11 +42,34 @@
                 fadeAnimation: false,
             }).addTo(leafletMap);
 
-            // 創建 Boundary 的標記 (使用預設圖示)
-            L.marker(boundaryA_latlng).bindTooltip("Boundary A").addTo(leafletMap);
-            L.marker(boundaryB_latlng).bindTooltip("Boundary B").addTo(leafletMap);
-            L.marker(boundaryC_latlng).bindTooltip("Boundary C").addTo(leafletMap);
-            L.marker(boundaryD_latlng).bindTooltip("Boundary D").addTo(leafletMap);
+            // 定義邊界點的經緯度
+            let boundaryA_latlng = [24.120922, 120.188075];
+            let boundaryB_latlng = [24.111212, 120.249094];
+            let boundaryC_latlng = [24.052452, 120.206136];
+            let boundaryD_latlng = [24.052064, 120.134678];
+
+            let lineColor = 'green'; // 設定連線的顏色
+
+            // 標記四個 Boundary 點並添加 Popup
+            L.marker(boundaryA_latlng)
+                .bindTooltip("Boundary A")
+                .bindPopup("經緯度: " + boundaryA_latlng[0].toFixed(6) + ", " + boundaryA_latlng[1].toFixed(6))
+                .addTo(leafletMap);
+
+            L.marker(boundaryB_latlng)
+                .bindTooltip("Boundary B")
+                .bindPopup("經緯度: " + boundaryB_latlng[0].toFixed(6) + ", " + boundaryB_latlng[1].toFixed(6))
+                .addTo(leafletMap);
+
+            L.marker(boundaryC_latlng)
+                .bindTooltip("Boundary C")
+                .bindPopup("經緯度: " + boundaryC_latlng[0].toFixed(6) + ", " + boundaryC_latlng[1].toFixed(6))
+                .addTo(leafletMap);
+
+            L.marker(boundaryD_latlng)
+                .bindTooltip("Boundary D")
+                .bindPopup("經緯度: " + boundaryD_latlng[0].toFixed(6) + ", " + boundaryD_latlng[1].toFixed(6))
+                .addTo(leafletMap);
 
             // 連接點 A 和 B
             L.polyline([boundaryA_latlng, boundaryB_latlng], { color: lineColor }).addTo(leafletMap);
@@ -79,7 +83,7 @@
             // 連接點 D 和 A
             L.polyline([boundaryD_latlng, boundaryA_latlng], { color: lineColor }).addTo(leafletMap);
 
-            // 新增 WTG01 標記為圓點
+            // 新增 WTG01 標記為圓點並添加 Popup
             let wtg01_coords = [24.1200, 120.1885];
             L.circleMarker(wtg01_coords, {
                 radius: 8,
@@ -88,9 +92,11 @@
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
-            }).bindTooltip("WTG01").addTo(leafletMap);
+            }).bindTooltip("WTG01")
+                .bindPopup("經緯度: " + wtg01_coords[0].toFixed(6) + ", " + wtg01_coords[1].toFixed(6))
+                .addTo(leafletMap);
 
-            // 新增 WTG02 標記為圓點
+            // 新增 WTG02 標記為圓點並添加 Popup
             let wtg02_coords = [24.0999, 120.1728];
             L.circleMarker(wtg02_coords, {
                 radius: 8,
@@ -99,12 +105,9 @@
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
-            }).bindTooltip("WTG02").addTo(leafletMap);
-
-            // 監聽地圖的 mousemove 事件
-            leafletMap.on('mousemove', function(e) {
-                coordinateDisplay.innerHTML = 'Lat: ' + e.latlng.lat.toFixed(6) + ', Lng: ' + e.latlng.lng.toFixed(6);
-            });
+            }).bindTooltip("WTG02")
+                .bindPopup("經緯度: " + wtg02_coords[0].toFixed(6) + ", " + wtg02_coords[1].toFixed(6))
+                .addTo(leafletMap);
 
             // 可選：調整地圖視野以包含所有標記
             let bounds = L.latLngBounds([boundaryA_latlng, boundaryB_latlng, boundaryC_latlng, boundaryD_latlng, wtg01_coords, wtg02_coords]);
