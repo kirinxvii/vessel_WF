@@ -27,9 +27,21 @@
 
     <script>
         var leafletMap = null;
+        var coordinateDisplay = null; // 用於顯示座標的 HTML 元素
+
         function create_leaflet_map() {
             let zoom = 10;
-            let initial_center = [24.15, 120.2]; // 設定一個大致位於兩個標記中間的初始中心點
+            let initial_center = [24.15, 120.2]; // 設定一個大致位於中心點
+
+            // 創建用於顯示座標的 div 元素
+            coordinateDisplay = L.DomUtil.create('div', 'coordinate-display');
+            coordinateDisplay.style.position = 'absolute';
+            coordinateDisplay.style.bottom = '10px';
+            coordinateDisplay.style.left = '10px';
+            coordinateDisplay.style.backgroundColor = 'white';
+            coordinateDisplay.style.padding = '5px';
+            coordinateDisplay.style.zIndex = '1000'; // 確保顯示在其他元素之上
+            document.getElementById('map-container').appendChild(coordinateDisplay);
 
             // 定義邊界點的經緯度
             let boundaryA_latlng = [24.120922, 120.188075];
@@ -49,30 +61,11 @@
                 fadeAnimation: false,
             }).addTo(leafletMap);
 
-            // 創建 Boundary 的自定義圖示
-            let boundaryIcon = L.icon({
-                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', // 預設的 Leaflet 標記
-                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-                iconSize:   [25, 41],
-                iconAnchor:  [12, 41],
-                shadowSize:  [41, 41],
-                shadowAnchor: [12, 41],
-                popupAnchor:  [-3, -76]
-            });
-
-            // 創建 WTG 的自定義圖示 (您可以替換成不同的圖片 URL)
-            let wtgIcon = L.icon({
-                iconUrl: 'your/path/to/wtg-icon.png', // 替換成您的 WTG 圖示圖片路徑
-                iconSize:   [32, 32], // 調整大小
-                iconAnchor:  [16, 32],
-                popupAnchor:  [0, -16]
-            });
-
-            // 標記四個 Boundary 點，使用 boundaryIcon
-            L.marker(boundaryA_latlng, { icon: boundaryIcon }).bindTooltip("Boundary A").addTo(leafletMap);
-            L.marker(boundaryB_latlng, { icon: boundaryIcon }).bindTooltip("Boundary B").addTo(leafletMap);
-            L.marker(boundaryC_latlng, { icon: boundaryIcon }).bindTooltip("Boundary C").addTo(leafletMap);
-            L.marker(boundaryD_latlng, { icon: boundaryIcon }).bindTooltip("Boundary D").addTo(leafletMap);
+            // 創建 Boundary 的標記 (使用預設圖示)
+            L.marker(boundaryA_latlng).bindTooltip("Boundary A").addTo(leafletMap);
+            L.marker(boundaryB_latlng).bindTooltip("Boundary B").addTo(leafletMap);
+            L.marker(boundaryC_latlng).bindTooltip("Boundary C").addTo(leafletMap);
+            L.marker(boundaryD_latlng).bindTooltip("Boundary D").addTo(leafletMap);
 
             // 連接點 A 和 B
             L.polyline([boundaryA_latlng, boundaryB_latlng], { color: lineColor }).addTo(leafletMap);
@@ -89,12 +82,12 @@
             // 新增 WTG01 標記為圓點
             let wtg01_coords = [24.1200, 120.1885];
             L.circleMarker(wtg01_coords, {
-                radius: 8, // 圓點的大小 (像素)
-                fillColor: 'blue', // 圓點的填充顏色
-                color: 'black', // 圓點的邊框顏色
-                weight: 1, // 圓點的邊框粗細 (像素)
-                opacity: 1, // 圓點的不透明度 (0 到 1)
-                fillOpacity: 0.8 // 圓點填充的不透明度 (0 到 1)
+                radius: 8,
+                fillColor: 'blue',
+                color: 'black',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
             }).bindTooltip("WTG01").addTo(leafletMap);
 
             // 新增 WTG02 標記為圓點
@@ -107,6 +100,11 @@
                 opacity: 1,
                 fillOpacity: 0.8
             }).bindTooltip("WTG02").addTo(leafletMap);
+
+            // 監聽地圖的 mousemove 事件
+            leafletMap.on('mousemove', function(e) {
+                coordinateDisplay.innerHTML = 'Lat: ' + e.latlng.lat.toFixed(6) + ', Lng: ' + e.latlng.lng.toFixed(6);
+            });
 
             // 可選：調整地圖視野以包含所有標記
             let bounds = L.latLngBounds([boundaryA_latlng, boundaryB_latlng, boundaryC_latlng, boundaryD_latlng, wtg01_coords, wtg02_coords]);
