@@ -30,6 +30,15 @@
         function create_leaflet_map() {
             let zoom = 14; // 調整縮放級別以便同時看到兩個標記
             let initial_center = [24.11, 120.18]; // 設定一個大致位於兩個標記中間的初始中心點
+          
+            // 定義邊界點的經緯度
+            let boundaryA_latlng = [24.120922, 120.188075];
+            let boundaryB_latlng = [24.111212, 120.249094];
+            let boundaryC_latlng = [24.052452, 120.206136];
+            let boundaryD_latlng = [24.052064, 120.134678];
+
+            let lineColor = 'green'; // 設定連線的顏色
+            
             leafletMap = L.map('leaflet-map', { renderer: L.canvas() }).setView(initial_center, zoom);
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -39,7 +48,25 @@
                 markerZoomAnimation: false,
                 fadeAnimation: false,
             }).addTo(leafletMap);
+            
+            // 標記四個點
+            L.marker(boundaryA_latlng).bindTooltip("Boundary A").addTo(leafletMap);
+            L.marker(boundaryB_latlng).bindTooltip("Boundary B").addTo(leafletMap);
+            L.marker(boundaryC_latlng).bindTooltip("Boundary C").addTo(leafletMap);
+            L.marker(boundaryD_latlng).bindTooltip("Boundary D").addTo(leafletMap);
 
+             // 連接點 A 和 B
+            L.polyline([boundaryA_latlng, boundaryB_latlng], { color: lineColor }).addTo(leafletMap);
+
+            // 連接點 B 和 C
+            L.polyline([boundaryB_latlng, boundaryC_latlng], { color: lineColor }).addTo(leafletMap);
+
+            // 連接點 C 和 D
+            L.polyline([boundaryC_latlng, boundaryD_latlng], { color: lineColor }).addTo(leafletMap);
+
+            // 連接點 D 和 A
+            L.polyline([boundaryD_latlng, boundaryA_latlng], { color: lineColor }).addTo(leafletMap);
+            
             // 新增 WTG01 標記
             let wtg01_coords = [24.1200, 120.1885];
             let wtg01_marker = L.marker(wtg01_coords).addTo(leafletMap);
