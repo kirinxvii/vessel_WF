@@ -86,13 +86,27 @@
             // 連接點 D 和 A
             L.polyline([boundaryD_latlng, boundaryA_latlng], { color: lineColor }).addTo(leafletMap);
 
-            // 新增 WTG01 標記，使用 wtgIcon
+            // 新增 WTG01 標記為圓點
             let wtg01_coords = [24.1200, 120.1885];
-            L.marker(wtg01_coords, { icon: wtgIcon }).bindTooltip("WTG01").addTo(leafletMap);
+            L.circleMarker(wtg01_coords, {
+                radius: 8, // 圓點的大小 (像素)
+                fillColor: 'blue', // 圓點的填充顏色
+                color: 'black', // 圓點的邊框顏色
+                weight: 1, // 圓點的邊框粗細 (像素)
+                opacity: 1, // 圓點的不透明度 (0 到 1)
+                fillOpacity: 0.8 // 圓點填充的不透明度 (0 到 1)
+            }).bindTooltip("WTG01").addTo(leafletMap);
 
-            // 新增 WTG02 標記，使用 wtgIcon
+            // 新增 WTG02 標記為圓點
             let wtg02_coords = [24.0999, 120.1728];
-            L.marker(wtg02_coords, { icon: wtgIcon }).bindTooltip("WTG02").addTo(leafletMap);
+            L.circleMarker(wtg02_coords, {
+                radius: 8,
+                fillColor: 'blue',
+                color: 'black',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).bindTooltip("WTG02").addTo(leafletMap);
 
             // 可選：調整地圖視野以包含所有標記
             let bounds = L.latLngBounds([boundaryA_latlng, boundaryB_latlng, boundaryC_latlng, boundaryD_latlng, wtg01_coords, wtg02_coords]);
