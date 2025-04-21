@@ -28,7 +28,17 @@
             integrity="sha256-20vOOebnBVfsvzfrNbyPl9azPARks76xihkMEPyc1H4="
             crossorigin=""></script>
     <script>
-        // 在這裡撰寫你的 Leaflet 地圖程式碼
+        var map = L.map('map').setView([24.15, 120.2], 13);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        var coordsDiv = document.getElementById('mouse-coords');
+
+        map.on('mousemove', function(e) {
+            coordsDiv.innerHTML = '經度: ' + e.latlng.lng.toFixed(6) + '<br>緯度: ' + e.latlng.lat.toFixed(6);
+        });
     </script>
 
 </body>
