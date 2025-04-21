@@ -113,7 +113,8 @@
 
             // 標記 WTG 點 (預設標記)
             wtg_coords.forEach(function(item) {
-                L.marker([item[1], item[2]]).bindTooltip(item[0]).addTo(leafletMap);
+                let tooltipContent = `${item[0]}<br>Lat: ${item[1].toFixed(4)}, Lng: ${item[2].toFixed(4)}`;
+                L.marker([item[1], item[2]]).bindTooltip(tooltipContent).addTo(leafletMap);
             });
 
             // OSS 座標點 (預設標記)
