@@ -47,9 +47,15 @@
                 attribution: '© OpenStreetMap'
             }).addTo(leafletMap);
 
-            leafletMap.on('mousemove', function(e) {
-                mouseCoordsDisplay.innerHTML = 'Lat: ' + e.latlng.lat.toFixed(6) + ', Lng: ' + e.latlng.lng.toFixed(6);
+            map.on('click', function(e){
+                let coord = e.latlng, 
+                    lat = coord.lat,
+                    lng = coord.lng;
+                console.log('latitude（緯度）', lat);
+                console.log('longitude（經度）', lng);
             });
+
+
         };
 
         create_leaflet_map();
