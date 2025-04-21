@@ -1,64 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>精簡 Leaflet 地圖</title>
+    <title>Leaflet 地圖</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          integrity="sha256-eYiy+uLFwGfXjv1Yg6Jyvg/pFPPNIBWIhbbacNJR9YU="
           crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
     <style>
-        #map-container {
-            width: 100%;
-            height: 450px;
-        }
-        #leaflet-map {
-            width: 100%;
-            height: 100%;
-        }
+        #map { height: 500px; } /* 設定地圖容器的高度 */
         #mouse-coords {
             position: absolute;
             bottom: 10px;
             left: 10px;
             background-color: white;
             padding: 5px;
-            z-index: 1000;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            z-index: 1000; /* 確保顯示在地圖上方 */
         }
     </style>
 </head>
 <body>
-    <div id="map-container">
-        <div id="leaflet-map"></div>
-        <div id="mouse-coords"></div>
-    </div>
 
+    <div id="map"></div>
+    <div id="mouse-coords"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20vOOebnBVfsvzfrNbyPl9azPARks76xihkMEPyc1H4="
+            crossorigin=""></script>
     <script>
-        var leafletMap = null;
-        var mouseCoordsDisplay = document.getElementById('mouse-coords');
-
-        function create_leaflet_map() {
-            let center = [24.15, 120.2];
-            let zoom = 10;
-
-            leafletMap = L.map('leaflet-map').setView(center, zoom);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap'
-            }).addTo(leafletMap);
-
-            map.on('click', function(e){
-                let coord = e.latlng, 
-                    lat = coord.lat,
-                    lng = coord.lng;
-                console.log('latitude（緯度）', lat);
-                console.log('longitude（經度）', lng);
-            });
-
-
-        };
-
-        create_leaflet_map();
+        // 在這裡撰寫你的 Leaflet 地圖程式碼
     </script>
+
 </body>
 </html>
