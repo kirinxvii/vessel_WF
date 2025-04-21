@@ -1,45 +1,168 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Leaflet 地圖</title>
+    <title>上下呈現兩份地圖</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-eYiy+uLFwGfXjv1Yg6Jyvg/pFPPNIBWIhbbacNJR9YU="
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
           crossorigin=""/>
     <style>
-        #map { height: 500px; } /* 設定地圖容器的高度 */
+        body {
+            display: flex;
+            flex-direction: column; /* 使內容垂直排列 */
+            align-items: center; /* 水平置中 (可選) */
+        }
+        .map-container {
+            width: 100%; /* 調整地圖容器寬度 */
+            height: 450px;
+            margin-bottom: 20px; /* 在兩張地圖之間增加間距 */
+            position: relative; /* 確保子元素的絕對定位正確 */
+        }
+        #leaflet-map {
+            width: 100%;
+            height: 100%;
+        }
         #mouse-coords {
             position: absolute;
             bottom: 10px;
             left: 10px;
             background-color: white;
             padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            z-index: 1000; /* 確保顯示在地圖上方 */
+            z-index: 1000;
+        }
+        /* VesselFinder 地圖樣式調整 */
+        #vf-map-container {
+            width: 100%; /* 調整地圖容器寬度，與 Leaflet 地圖一致 */
+            height: 450px;
         }
     </style>
 </head>
 <body>
+    <div class="map-container">
+        <div id="leaflet-map"></div>
+        <div id="mouse-coords"></div>
+    </div>
 
-    <div id="map"></div>
-    <div id="mouse-coords"></div>
+    <div id="vf-map-container">
+        <script type="text/javascript">
+            // Map appearance
+            var width="100%";        // width in pixels or percentage
+            var height="450px";       // height in pixels
+            var latitude="24.09";     // center latitude (decimal degrees)
+            var longitude="120.2";    // center longitude (decimal degrees)
+            var zoom="12";             // initial zoom (between 3 and 18)
+            var names=true;            // always show ship names (defaults to false)
+
+            // Fleet tracking
+            var fleet="bd11a206049a72aa14edad5b5815ee03"; // your personal Fleet key (displayed in your User Profile)
+            var fleet_name="Pin Pile";                      // display particular fleet from your fleet list
+        </script>
+        <script type="text/javascript" src="https://www.vesselfinder.com/aismap.js"></script>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20vOOebnBVfsvzfrNbyPl9azPARks76xihkMEPyc1H4="
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             crossorigin=""></script>
     <script>
-        var map = L.map('map').setView([24.15, 120.2], 13);
+        var leafletMap = null;
+        var mouseCoordsDisplay = document.getElementById('mouse-coords');
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        function create_leaflet_map() {
+            let center = [24.09, 120.2];
+            let zoom = 12;
 
-        var coordsDiv = document.getElementById('mouse-coords');
+            leafletMap = L.map('leaflet-map').setView(center, zoom);
 
-        map.on('mousemove', function(e) {
-            coordsDiv.innerHTML = '經度: ' + e.latlng.lng.toFixed(6) + '<br>緯度: ' + e.latlng.lat.toFixed(6);
-        });
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(leafletMap);
+
+            // WTG 座標點
+            let wtg_coords = [
+                ["WTG01", 24.1200, 120.1885],
+                ["WTG02", 24.0999, 120.1728],
+                ["WTG03", 24.0797, 120.1572],
+                ["WTG04", 24.1188, 120.1963],
+                ["WTG05", 24.0990, 120.1811],
+                ["WTG06", 24.0793, 120.1659],
+                ["WTG07", 24.0596, 120.1507],
+                ["WTG08", 24.1176, 120.2041],
+                ["WTG09", 24.0982, 120.1893],
+                ["WTG10", 24.0789, 120.1746],
+                ["WTG11", 24.0596, 120.1598],
+                ["WTG12", 24.1163, 120.2119],
+                ["WTG13", 24.0974, 120.1976],
+                ["WTG14", 24.0786, 120.1833],
+                ["WTG15", 24.0597, 120.1690],
+                ["WTG16", 24.1151, 120.2197],
+                ["WTG17", 24.0966, 120.2058],
+                ["WTG18", 24.0782, 120.1920],
+                ["WTG19", 24.0598, 120.1781],
+                ["WTG20", 24.1138, 120.2275],
+                ["WTG21", 24.0960, 120.2140],
+                ["WTG22", 24.0778, 120.2007],
+                ["WTG23", 24.0598, 120.1872],
+                ["WTG24", 24.1126, 120.2353],
+                ["WTG25", 24.0950, 120.2223],
+                ["WTG26", 24.0775, 120.2094],
+                ["WTG27", 24.0599, 120.1964],
+                ["WTG28", 24.1113, 120.2431],
+                ["WTG29", 24.0942, 120.2306],
+                ["WTG30", 24.0771, 120.2181],
+                ["WTG31", 24.0600, 120.2055],
+            ];
+
+            // 標記 WTG 點 (預設標記)
+            wtg_coords.forEach(function(item) {
+                L.marker([item[1], item[2]]).bindTooltip(item[0]).addTo(leafletMap);
+            });
+
+            // OSS 座標點 (預設標記)
+            let oss_coords = [24.0868, 120.2074];
+            L.marker(oss_coords).bindTooltip("OSS").addTo(leafletMap);
+
+            // Boundary 座標點 (圓點標記)
+            let boundaryA = [24.120922, 120.188075];
+            let boundaryB = [24.111212, 120.249094];
+            let boundaryC = [24.052452, 120.206136];
+            let boundaryD = [24.052064, 120.134678];
+
+            let boundaryStyle = {
+                radius: 8,
+                fillColor: 'green',
+                color: 'black',
+                weight: 1,
+                opacity: 1,
+                fillOpacity: 0.8
+            };
+
+            L.circleMarker(boundaryA, boundaryStyle).bindTooltip("Boundary A").addTo(leafletMap);
+            L.circleMarker(boundaryB, boundaryStyle).bindTooltip("Boundary B").addTo(leafletMap);
+            L.circleMarker(boundaryC, boundaryStyle).bindTooltip("Boundary C").addTo(leafletMap);
+            L.circleMarker(boundaryD, boundaryStyle).bindTooltip("Boundary D").addTo(leafletMap);
+
+            let boundaryLineColor = 'green';
+
+            // 連接 Boundary 點
+            L.polyline([boundaryA, boundaryB], { color: boundaryLineColor }).addTo(leafletMap);
+            L.polyline([boundaryB, boundaryC], { color: boundaryLineColor }).addTo(leafletMap);
+            L.polyline([boundaryC, boundaryD], { color: boundaryLineColor }).addTo(leafletMap);
+            L.polyline([boundaryA, boundaryD], { color: boundaryLineColor }).addTo(leafletMap);
+
+            // 監聽地圖的 mousemove 事件以顯示滑鼠座標
+            leafletMap.on('mousemove', function(e) {
+                mouseCoordsDisplay.innerHTML = 'Lat: ' + e.latlng.lat.toFixed(6) + ', Lng: ' + e.latlng.lng.toFixed(6);
+            });
+
+            // 調整地圖視野以包含所有標記和線條
+            let allPoints = [
+                boundaryA, boundaryB, boundaryC, boundaryD, oss_coords,
+                ...wtg_coords.map(item => [item[1], item[2]])
+            ];
+            let bounds = L.latLngBounds(allPoints);
+            leafletMap.fitBounds(bounds, { padding: [50, 50] });
+        };
+
+        create_leaflet_map();
     </script>
-
 </body>
 </html>
